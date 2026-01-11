@@ -29,7 +29,7 @@ public class InventoryController {
     }
 
     @PutMapping
-    public Map<String, String> updateInventory(CombinedRequest combinedRequest){
+    public Map<String, String> updateInventory(@RequestBody CombinedRequest combinedRequest){
         Map<String, String> apiResponse = new HashMap<>();
         Product product = combinedRequest.getProduct();
         Inventory inventory = combinedRequest.getInventory();
@@ -54,7 +54,7 @@ public class InventoryController {
     }
 
     @PostMapping
-    public Map<String, String> saveInventory(Inventory inventory){
+    public Map<String, String> saveInventory(@RequestBody Inventory inventory){
         Map<String, String> apiResponse = new HashMap<>();
 
         if (serviceClass.validateInventory(inventory)){
