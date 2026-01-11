@@ -1,6 +1,7 @@
 package com.app.retailcontrol.entity;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.mongodb.core.mapping.Document;
 
