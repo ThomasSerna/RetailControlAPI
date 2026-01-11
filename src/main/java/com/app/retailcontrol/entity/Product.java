@@ -24,6 +24,7 @@ public class Product {
     private Double price;
 
     @NotNull(message = "Name cannot be empty")
+    @Column(nullable = false, unique = true)
     private String sku;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
