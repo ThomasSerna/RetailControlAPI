@@ -16,7 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findBySku(String sku);
     Optional<Product> findByName(String name);
     List<Product> findAllByNameIgnoreCase(String name);
-    List<Product> findAllByNameIgnoreCaseAndCategory(String name, String category);
+    List<Product> findAllByNameContainingIgnoreCase(String name);
     List<Product> findAllByNameContainingIgnoreCaseAndCategory(String name, String category);
     Boolean existsByName(String name);
 
@@ -28,4 +28,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT i.product FROM Inventory i WHERE i.store.id = :storeId")
     List<Product> findAllByStoreId(@Param("storeId") Long storeId);
+
+    @Query("SELECT i.product FROM Inventory i WHERE LOWER(i.product.name) LIKE LOWER(CONCAT('%', :pname, '%')) AND i.store.id = :storeId")
+    List<Product> findByNameLike(@Param("storeId") Long storeId, @Param("pname") String pname);
 }

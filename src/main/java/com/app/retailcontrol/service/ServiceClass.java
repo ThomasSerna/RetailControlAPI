@@ -6,6 +6,8 @@ import com.app.retailcontrol.repository.InventoryRepository;
 import com.app.retailcontrol.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ServiceClass {
 
@@ -29,17 +31,15 @@ public class ServiceClass {
     }
 
     public boolean validateProductId(Long id){
-        return productRepository.existsById(id);
+        return !productRepository.existsById(id);
     }
 
-    public Inventory getInventoryId(Inventory inventory){
-        return inventoryRepository
-                .findByProduct_IdAndStore_Id(
+    public Optional<Inventory> getInventory(Inventory inventory){
+        return inventoryRepository.findByProduct_IdAndStore_Id(
                         inventory.getProduct().getId(),
                         inventory.getStore().getId()
-                ).orElseThrow(() -> new RuntimeException());
+                );
     }
-
 
 
 }
