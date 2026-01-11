@@ -15,15 +15,13 @@ public class OrderService {
     private final InventoryRepository inventoryRepository;
     private final OrderDetailsRepository orderDetailsRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
 
-    public OrderService(CustomerRepository customerRepository, InventoryRepository inventoryRepository, OrderDetailsRepository orderDetailsRepository, OrderItemRepository orderItemRepository, ProductRepository productRepository, StoreRepository storeRepository) {
+    public OrderService(CustomerRepository customerRepository, InventoryRepository inventoryRepository, OrderDetailsRepository orderDetailsRepository, OrderItemRepository orderItemRepository, StoreRepository storeRepository) {
         this.customerRepository = customerRepository;
         this.inventoryRepository = inventoryRepository;
         this.orderDetailsRepository = orderDetailsRepository;
         this.orderItemRepository = orderItemRepository;
-        this.productRepository = productRepository;
         this.storeRepository = storeRepository;
     }
 
@@ -68,9 +66,6 @@ public class OrderService {
             );
 
             int newStock = inventory.getStock() - purchaseProductDTO.getQuantity();
-            if (newStock < 0) {
-                throw new RuntimeException("No stock");
-            }
             inventory.setStock(newStock);
 
             inventoryRepository.save(inventory);
