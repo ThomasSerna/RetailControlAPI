@@ -26,7 +26,6 @@ public class ReviewService {
 
         Set<Long> customerIds = reviews.stream()
                 .map(Review::getCustomerID)
-                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         Map<Long, String> customerNameById = customerRepository.findAllById(customerIds).stream()
