@@ -1,12 +1,7 @@
 package com.app.retailcontrol.controller;
 
 import com.app.retailcontrol.dto.ReviewDTO;
-import com.app.retailcontrol.entity.Product;
-import com.app.retailcontrol.entity.Review;
-import com.app.retailcontrol.repository.CustomerRepository;
-import com.app.retailcontrol.repository.ReviewRepository;
 import com.app.retailcontrol.service.ReviewService;
-import com.app.retailcontrol.service.ServiceClass;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +15,10 @@ import java.util.Map;
 @RequestMapping("/reviews")
 public class ReviewController {
 
-    private final CustomerRepository customerRepository;
-    private final ReviewRepository reviewRepository;
     private final ReviewService reviewService;
 
 
-    public ReviewController(CustomerRepository customerRepository, ReviewRepository reviewRepository, ReviewService reviewService) {
-        this.customerRepository = customerRepository;
-        this.reviewRepository = reviewRepository;
+    public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 

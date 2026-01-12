@@ -2,10 +2,8 @@ package com.app.retailcontrol.service;
 
 import com.app.retailcontrol.entity.Inventory;
 import com.app.retailcontrol.entity.Product;
-import com.app.retailcontrol.repository.CustomerRepository;
 import com.app.retailcontrol.repository.InventoryRepository;
 import com.app.retailcontrol.repository.ProductRepository;
-import com.app.retailcontrol.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
