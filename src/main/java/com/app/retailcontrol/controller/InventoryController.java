@@ -53,7 +53,7 @@ public class InventoryController {
             inventoryRepository.save(newInventory);
 
             apiResponse = new ApiResponse<>(
-                    "Successfully updated product",
+                    "Inventory updated successfully",
                     "ok",
                     200,
                     null
@@ -71,7 +71,7 @@ public class InventoryController {
             inventoryRepository.save(inventory);
 
             apiResponse = new ApiResponse<>(
-                    "Data saved successfully",
+                    "Inventory saved successfully",
                     "created",
                     201,
                     null
@@ -135,24 +135,6 @@ public class InventoryController {
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> deleteProduct(@PathVariable Long id){
-        ApiResponse<Object> apiResponse;
-        if (validateService.productByIdExists(id)) {
-            throw new ResourceNotFoundException("Product doesn't exists");
-        }
-
-        productRepository.deleteById(id);
-        apiResponse = new ApiResponse<>(
-                "Product deleted successfully",
-                "ok",
-                204,
-                null
-        );
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(apiResponse);
     }
 
     // has also to change

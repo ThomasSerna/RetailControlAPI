@@ -1,8 +1,13 @@
 package com.app.retailcontrol.controller;
 
+import com.app.retailcontrol.dto.ApiResponse;
 import com.app.retailcontrol.entity.Product;
+import com.app.retailcontrol.exception.ResourceAlreadyExistsException;
+import com.app.retailcontrol.exception.ResourceNotFoundException;
 import com.app.retailcontrol.repository.ProductRepository;
 import com.app.retailcontrol.service.ValidateService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,45 +27,74 @@ public class ProductController {
     }
 
     @PostMapping
-    public Map<String, String> addProduct(@RequestBody Product product) {
-        Map<String, String> apiResponse = new HashMap<>();
+    public ResponseEntity<ApiResponse<Object>> addProduct(@RequestBody Product product) {
+        ApiResponse<Object> apiResponse;
         if (validateService.productExists(product)){
             productRepository.save(product);
-            apiResponse.put("message", "Product added to the database");
-            return apiResponse;
+
+            apiResponse = new ApiResponse<>(
+                    "Product saved successfully",
+                    "created",
+                    201,
+                    null
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
         }
 
-        apiResponse.put("message", "Product already exists");
-        return apiResponse;
+        throw new ResourceAlreadyExistsException("Product already exists");
     }
 
     @GetMapping("/{id}")
-    public Map<String, Object> getProductById(@PathVariable Long id) {
-        Map<String, Object> apiResponse = new HashMap<>();
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException());
-        apiResponse.put("products", product);
-        return apiResponse;
+    public ResponseEntity<ApiResponse<Object>> getProductById(@PathVariable Long id) {
+        ApiResponse<Object> apiResponse;
+        Product product = productRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        apiResponse = new ApiResponse<>(
+                "Product retrieved successfully",
+                "ok",
+                200,
+                product
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
     @PutMapping
-    public Map<String, String> updateProduct(@RequestBody Product product) {
-        Map<String, String> apiResponse = new HashMap<>();
+    public ResponseEntity<ApiResponse<Object>> updateProduct(@RequestBody Product product) {
+        ApiResponse<Object> apiResponse;
         productRepository.save(product);
-        apiResponse.put("message", "Product updated");
-        return apiResponse;
+        apiResponse = new ApiResponse<>(
+                "Product updated successfully",
+                "ok",
+                200,
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
     @GetMapping
-    public Map<String, Object> getAllProducts(){
-        Map<String, Object> apiResponse = new HashMap<>();
-        List<Product> product = productRepository.findAll();
-        apiResponse.put("products", product);
-        return apiResponse;
+    public ResponseEntity<ApiResponse<Object>> getAllProducts(){
+        ApiResponse<Object> apiResponse;
+        List<Product> products = productRepository.findAll();
+
+        apiResponse = new ApiResponse<>(
+                "Products retrieved successfully",
+                "ok",
+                200,
+                products
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
+    // Has to change to param filter
     @GetMapping("/category/{name}/{category}")
-    public Map<String, Object> filterByCategoryProduct(@PathVariable String name, @PathVariable String category){
-        Map<String, Object> apiResponse = new HashMap<>();
+    public ResponseEntity<ApiResponse<Object>> filterByCategoryProduct(@PathVariable String name, @PathVariable String category){
+        ApiResponse<Object> apiResponse;
         List<Product> products;
         if (category == null) {
             products = productRepository.findAllByNameIgnoreCase(name);
@@ -69,37 +103,62 @@ public class ProductController {
         } else {
             products = productRepository.findAllByNameContainingIgnoreCaseAndCategory(name, category);
         }
-        apiResponse.put("products", products);
-        return apiResponse;
+
+        apiResponse = new ApiResponse<>(
+                "Products retrieved successfully",
+                "ok",
+                200,
+                products
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
-    @GetMapping("filter/{category}/{storeid}")
-    public Map<String, Object> getProductByCategoryAndStoreId(@PathVariable String category, @PathVariable Long storeid){
-        Map<String, Object> apiResponse = new HashMap<>();
-        List<Product> product = productRepository.findAllByCategoryAndStoreId(storeid, category);
-        apiResponse.put("products", product);
-        return apiResponse;
+    // Also has to change
+    @GetMapping("filter/{category}/{storeId}")
+    public ResponseEntity<ApiResponse<Object>> getProductByCategoryAndStoreId(@PathVariable String category, @PathVariable Long storeId){
+        ApiResponse<Object> apiResponse;
+        List<Product> products = productRepository.findAllByCategoryAndStoreId(storeId, category);
+        apiResponse = new ApiResponse<>(
+                "Products retrieved successfully",
+                "ok",
+                200,
+                products
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, String> deleteProduct(@PathVariable Long id){
-        Map<String, String> apiResponse = new HashMap<>();
+    public ResponseEntity<ApiResponse<Object>> deleteProduct(@PathVariable Long id){
+        ApiResponse<Object> apiResponse;
         if (validateService.productByIdExists(id)) {
-            apiResponse.put("message", "The product doesn't exists");
-            return apiResponse;
+            throw new ResourceNotFoundException("Product doesn't exists");
         }
-
         productRepository.deleteById(id);
-        apiResponse.put("message", "The product was deleted");
-        return apiResponse;
+
+        apiResponse = new ApiResponse<>(
+                "Product deleted successfully",
+                "ok",
+                204,
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(apiResponse);
     }
 
     @GetMapping("/searchProduct/{name}")
-    public Map<String, Object> searchProduct(@PathVariable String name){
-        Map<String, Object> apiResponse = new HashMap<>();
+    public ResponseEntity<ApiResponse<Object>> searchProduct(@PathVariable String name){
+        ApiResponse<Object> apiResponse;
         List<Product> product = productRepository.findAllByNameContainingIgnoreCase(name);
-        apiResponse.put("products", product);
-        return apiResponse;
+        apiResponse = new ApiResponse<>(
+                "Product retrieved successfully",
+                "ok",
+                200,
+                product
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
 }
