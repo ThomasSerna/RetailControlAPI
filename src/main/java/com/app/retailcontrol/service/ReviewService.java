@@ -7,8 +7,8 @@ import com.app.retailcontrol.repository.CustomerRepository;
 import com.app.retailcontrol.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
@@ -21,24 +21,23 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
-    public List<ReviewDTO> getReviewsDto(Long storeId, Long productId){
+    public List<ReviewDTO> getReviewsDto(Long storeId, Long productId) {
         List<Review> reviews = reviewRepository.findAllByStoreIDAndProductID(storeId, productId);
-        List<ReviewDTO> reviewDTOs = new ArrayList<>();
-        String customerName;
 
-        for (Review review : reviews) {
-            customerName = customerRepository.findById(review.getCustomerID())
-                    .map(Customer::getName)
-                    .orElse(null);
+        Set<Long> customerIds = reviews.stream()
+                .map(Review::getCustomerID)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
-            reviewDTOs.add(new ReviewDTO(
-                    customerName == null ? "Unknown" : customerName,
-                    review.getComment(),
-                    review.getRating()
-            ));
-        }
+        Map<Long, String> customerNameById = customerRepository.findAllById(customerIds).stream()
+                .collect(Collectors.toMap(Customer::getId, Customer::getName));
 
-        return reviewDTOs;
+        return reviews.stream()
+                .map(r -> new ReviewDTO(
+                        customerNameById.getOrDefault(r.getCustomerID(), "Unknown"),
+                        r.getComment(),
+                        r.getRating()
+                )).toList();
     }
 
 }
