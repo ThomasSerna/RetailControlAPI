@@ -1,15 +1,15 @@
 package com.app.retailcontrol.dto;
 
-public class ApiResponse<T> {
+public class ApiResponseDTO<T> {
 
     private String message;
     private String status;
     private Integer statusCode;
     private T data;
 
-    public ApiResponse(){}
+    public ApiResponseDTO(){}
 
-    public ApiResponse(String message, String status, Integer statusCode, T data) {
+    public ApiResponseDTO(String message, String status, Integer statusCode, T data) {
         this.message = message;
         this.status = status;
         this.statusCode = statusCode;

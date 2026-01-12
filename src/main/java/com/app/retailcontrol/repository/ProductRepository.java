@@ -12,9 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByCategory(String category);
-    List<Product> findAllByPriceBetween(Double minPrice, Double maxPrice);
-    Optional<Product> findBySku(String sku);
-    Optional<Product> findByName(String name);
     List<Product> findAllByNameIgnoreCase(String name);
     List<Product> findAllByNameContainingIgnoreCase(String name);
     List<Product> findAllByNameContainingIgnoreCaseAndCategory(String name, String category);

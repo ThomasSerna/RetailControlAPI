@@ -3,7 +3,7 @@ package com.app.retailcontrol.dto;
 import com.app.retailcontrol.entity.Inventory;
 import com.app.retailcontrol.entity.Product;
 
-public class CombinedRequest {
+public class CombinedRequestDTO {
 
     private Product product;
     private Inventory inventory;
